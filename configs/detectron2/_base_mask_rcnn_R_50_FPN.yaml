@@ -1,0 +1,75 @@
+# ----------------------------------------------------------------------------
+# Train a Mask R-CNN with ResNet-50 and FPN backbone. This config follows
+# Detectron2 format; and is unrelated with our VirTex configs. Params here
+# replicate evaluation protocol as per MoCo (https://arxiv.org/abs/1911.05722).
+# ----------------------------------------------------------------------------
+
+INPUT:
+  # Input format will always be RGB, consistent with torchvision.
+  FORMAT: "RGB"
+  MIN_SIZE_TRAIN: (640, 672, 704, 736, 768, 800)
+  MIN_SIZE_TEST: 800
+
+MODEL:
+  META_ARCHITECTURE: "GeneralizedRCNN"
+
+  # Train all layers end-to-end by default.
+  BACKBONE:
+    NAME: "build_resnet_fpn_backbone"
+    FREEZE_AT: 0
+
+  # Fine-tune with SyncBN.
+  # STRIDE_IN_1X1 is False for torchvision-like models.
+  RESNETS:
+    DEPTH: 50
+    NORM: "SyncBN"
+    STRIDE_IN_1X1: False
+    OUT_FEATURES: ["res2", "res3", "res4", "res5"]
+
+  FPN:
+    IN_FEATURES: ["res2", "res3", "res4", "res5"]
+
+  ANCHOR_GENERATOR:
+    # One size for each in feature map
+    SIZES: [[32], [64], [128], [256], [512]]
+    # Three aspect ratios (same for all in feature maps)
+    ASPECT_RATIOS: [[0.5, 1.0, 2.0]]
+
+  RPN:
+    IN_FEATURES: ["p2", "p3", "p4", "p5", "p6"]
+    PRE_NMS_TOPK_TRAIN: 2000
+    PRE_NMS_TOPK_TEST: 1000
+
+    POST_NMS_TOPK_TRAIN: 1000
+    POST_NMS_TOPK_TEST: 1000
+
+  ROI_HEADS:
+    NAME: "StandardROIHeads"
+    IN_FEATURES: ["p2", "p3", "p4", "p5"]
+
+  ROI_BOX_HEAD:
+    NAME: "FastRCNNConvFCHead"
+    NUM_FC: 2
+    POOLER_RESOLUTION: 7
+
+  ROI_MASK_HEAD:
+    NAME: "MaskRCNNConvUpsampleHead"
+    NUM_CONV: 4
+    POOLER_RESOLUTION: 14
+
+  # ImageNet color mean for torchvision-like models (RGB order).
+  # These are in [0-255] range as expected by Detectron2. Rest of our codebase
+  # uses [0-1] range; but both are equivalent and consistent.
+  PIXEL_MEAN: [123.675, 116.280, 103.530]
+  PIXEL_STD: [58.395, 57.120, 57.375]
+
+SOLVER:
+  # This is for 8 GPUs, apply linear scaling for 4 GPUs.
+  IMS_PER_BATCH: 16
+  BASE_LR: 0.02
+
+TEST:
+  PRECISE_BN:
+    ENABLED: True
+
+VERSION: 2

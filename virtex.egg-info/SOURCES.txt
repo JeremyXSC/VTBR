@@ -1,0 +1,7 @@
+README.md
+setup.py
+virtex.egg-info/PKG-INFO
+virtex.egg-info/SOURCES.txt
+virtex.egg-info/dependency_links.txt
+virtex.egg-info/top_level.txt
+virtex.egg-info/zip-safe

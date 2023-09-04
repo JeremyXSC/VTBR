@@ -1,0 +1,33 @@
+RANDOM_SEED: 0
+# Don't need AMP to train a tiny linear layer.
+AMP: false
+CUDNN_BENCHMARK: true
+CUDNN_DETERMINISTIC: false
+
+DATA:
+  ROOT: "datasets/imagenet"
+  IMAGE_TRANSFORM_TRAIN:
+    - "random_resized_crop::{'scale': (0.08, 1.0)}"
+    - "horizontal_flip"
+    - "normalize"
+  IMAGE_TRANSFORM_VAL:
+    - "smallest_resize"
+    - "center_crop"
+    - "normalize"
+
+MODEL:
+  VISUAL:
+    FROZEN: true
+
+OPTIM:
+  BATCH_SIZE: 256
+  SGD_MOMENTUM: 0.9
+  WEIGHT_DECAY: 0.0
+  NO_DECAY: "none"
+  LOOKAHEAD:
+    USE: false
+
+  LR: 0.3
+  WARMUP_STEPS: 0
+  LR_DECAY_NAME: "cosine"
+  NUM_ITERATIONS: 500500  # 100 epochs

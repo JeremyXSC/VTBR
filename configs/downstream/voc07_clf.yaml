@@ -1,0 +1,15 @@
+RANDOM_SEED: 0
+DATA:
+  ROOT: datasets/VOC2007
+  IMAGE_TRANSFORM_TRAIN:
+    - smallest_resize
+    - center_crop
+    - normalize
+  IMAGE_TRANSFORM_VAL:
+    - smallest_resize
+    - center_crop
+    - normalize
+
+OPTIM:
+  # Only used for feature extraction, doesn't mean much.
+  BATCH_SIZE: 128
