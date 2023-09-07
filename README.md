@@ -45,7 +45,9 @@ python scripts/pretrain_virtex.py \
     --serialization-dir /tmp/VIRTEX_R_50_L1_H1024
     # Default: --checkpoint-every 2000 --log-every 20
 ```
-
+After completing the training processing, we transfer the learned model as the backbone
+of the downstream Re-ID task. More training procedure can be available in open-source Re-ID backbone [reid-strong-baseline
+](https://github.com/michuanhaohao/reid-strong-baseline).
 
 ### Acknowledgments
 This work was supported by the National Natural Science Foundation of China under Project(Grant No.62301315) and Startup Fund for Young Faculty at SJTU (SFYF at SJTU) under Grant No.23X010501967.
