@@ -24,11 +24,26 @@ both supervised or unsupervised -- despite using up to 1.4x fewer images.
 Get the pretrained ResNet-50 visual backbone from our best performing VirTex
 model in one line *without any installation*!
 
+
+**Model Preparation**
 ```python
 import torch
 
 # That's it, this one line only requires PyTorch.
 model = torch.hub.load("kdexd/virtex", "resnet50", pretrained=True)
+```
+
+The pretrained models in our model zoo have changed from [`v1.0`](https://github.com/kdexd/virtex/releases/tag/v1.0) onwards.
+
+
+**Training the base model**
+```python
+python scripts/pretrain_virtex.py \
+    --config configs/_base_bicaptioning_R_50_L1_H1024.yaml \
+    --num-gpus-per-machine 8 \
+    --cpu-workers 4 \
+    --serialization-dir /tmp/VIRTEX_R_50_L1_H1024
+    # Default: --checkpoint-every 2000 --log-every 20
 ```
 
 
